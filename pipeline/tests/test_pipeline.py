@@ -114,6 +114,27 @@ class SiteTest(unittest.TestCase):
         html = gs.renderizar(lead_fake(opening_hours=""), CFG)
         self.assertIn("Horário não informado", html)
 
+    def test_categoria_em_portugues(self):
+        self.assertEqual(gs.categoria_bonita("shop=bakery"), "Padaria")
+        self.assertEqual(gs.categoria_bonita("amenity=dentist"), "Dentista")
+        self.assertEqual(gs.categoria_bonita("craft=electrician"), "Eletricista")
+        # valor fora do dicionário não pode aparecer em inglês
+        self.assertEqual(gs.categoria_bonita("shop=xyz_desconhecido"), "Negócio local")
+
+    def test_nenhuma_categoria_em_ingles_na_pagina(self):
+        html = gs.renderizar(lead_fake(categoria="shop=hairdresser"), CFG)
+        self.assertNotIn("Hairdresser", html)
+        self.assertNotIn("hairdresser", html.lower().replace("ramo", ""))
+        self.assertIn("Cabeleireiro", html)
+
+    def test_link_para_mapa_sempre_presente(self):
+        com_coord = gs.renderizar(lead_fake(), CFG)
+        sem_coord = gs.renderizar(lead_fake(lat="", lon=""), CFG)
+        for html in (com_coord, sem_coord):
+            self.assertIn("Abrir no mapa", html)
+        self.assertIn("openstreetmap.org/export/embed.html", com_coord)
+        self.assertNotIn("openstreetmap.org/export/embed.html", sem_coord)
+
     def test_ramo_por_categoria(self):
         self.assertEqual(gs.ramo_de("amenity=restaurant"), "alimentacao")
         self.assertEqual(gs.ramo_de("shop=hairdresser"), "beleza")

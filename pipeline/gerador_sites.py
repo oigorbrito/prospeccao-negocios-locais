@@ -76,9 +76,38 @@ def ramo_de(categoria):
     return "geral"
 
 
+# Rótulos em português para os valores de categoria mais comuns do OpenStreetMap.
+ROTULOS_CATEGORIA = {
+    "bakery": "Padaria", "cafe": "Cafeteria", "restaurant": "Restaurante", "pizza": "Pizzaria",
+    "fast_food": "Lanchonete", "bar": "Bar", "pub": "Pub", "ice_cream": "Sorveteria", "butcher": "Açougue",
+    "deli": "Delicatessen", "greengrocer": "Hortifrúti", "confectionery": "Confeitaria", "beverages": "Bebidas",
+    "coffee": "Cafeteria", "supermarket": "Supermercado", "convenience": "Conveniência", "clothes": "Roupas",
+    "shoes": "Calçados", "jewelry": "Joalheria", "hairdresser": "Cabeleireiro", "beauty": "Salão de beleza",
+    "barber": "Barbearia", "nails": "Manicure", "cosmetics": "Cosméticos", "tattoo": "Tatuagem",
+    "massage": "Massagem", "electronics": "Eletrônicos", "furniture": "Móveis", "hardware": "Ferragens",
+    "florist": "Floricultura", "bicycle": "Bicicletaria", "car_repair": "Oficina mecânica",
+    "car_wash": "Lava-rápido", "car_parts": "Autopeças", "tyres": "Borracharia", "car": "Concessionária",
+    "electrician": "Eletricista", "plumber": "Encanador", "carpenter": "Marceneiro", "painter": "Pintor",
+    "locksmith": "Chaveiro", "roofer": "Telhadista", "builder": "Construtora", "gardener": "Jardineiro",
+    "dentist": "Dentista", "doctor": "Consultório médico", "clinic": "Clínica", "pharmacy": "Farmácia",
+    "physiotherapist": "Fisioterapia", "optician": "Ótica", "veterinary": "Veterinário",
+    "psychotherapist": "Psicologia", "chiropractor": "Quiropraxia", "gym": "Academia",
+    "fitness_centre": "Academia", "yoga": "Yoga", "dance": "Dança", "pilates": "Pilates",
+    "hotel": "Hotel", "guest_house": "Pousada", "hostel": "Hostel", "lawyer": "Advocacia",
+    "accountant": "Contabilidade", "estate_agent": "Imobiliária", "insurance": "Seguros",
+    "architect": "Arquitetura", "photographer": "Fotografia", "printing": "Gráfica",
+    "travel_agent": "Agência de viagens", "notary": "Cartório", "office": "Escritório",
+}
+
+
 def categoria_bonita(categoria):
-    valor = (categoria or "").split("=", 1)[-1].split(";")[0]
-    return valor.replace("_", " ").strip().capitalize()
+    valor = (categoria or "").split("=", 1)[-1].split(";")[0].strip()
+    if not valor:
+        return ""
+    if valor in ROTULOS_CATEGORIA:
+        return ROTULOS_CATEGORIA[valor]
+    # Valor fora do dicionário: sem texto em inglês, mostra um rótulo genérico em vez de inventar tradução.
+    return "Negócio local"
 
 
 def slugify(texto):
@@ -140,21 +169,19 @@ def renderizar(lead, cfg, final=False):
         horas_html = ('<p class="raw">Horário não informado. Entre em contato pelo telefone para confirmar.</p>')
         horas_json = "null"
 
+    # O link para abrir o mapa fica sempre visível, para o visitante chegar ao local mesmo se o mapa embutido falhar.
+    consulta = urllib.parse.quote_plus(" ".join(x for x in [nome, endereco, cidade] if x))
+    link_mapa = (f'<a class="btn btn-outline" style="margin-top:14px" href="https://www.openstreetmap.org/search?query={consulta}" '
+                 f'target="_blank" rel="noopener">Abrir no mapa →</a>')
     lat, lon = lead.get("lat"), lead.get("lon")
-    if lat and lon:
-        try:
-            la, lo = float(lat), float(lon)
-            caixa = f"{lo - .006},{la - .0035},{lo + .006},{la + .0035}"
-            mapa = (f'<iframe title="Mapa: {e(nome)}" loading="lazy" '
-                    f'src="https://www.openstreetmap.org/export/embed.html?bbox={caixa}&amp;layer=mapnik&amp;marker={la},{lo}"></iframe>')
-        except ValueError:
-            mapa = ""
-    else:
-        mapa = ""
-    if not mapa:
-        consulta = urllib.parse.quote_plus(" ".join(x for x in [nome, endereco, cidade] if x))
-        mapa = (f'<div class="nomap"><div><p style="margin:0 0 8px;color:var(--ink);font-weight:600">{e(endereco or local or nome)}</p>'
-                f'<a href="https://www.openstreetmap.org/search?query={consulta}" target="_blank" rel="noopener">Ver no mapa →</a></div></div>')
+    mapa = ""
+    try:
+        la, lo = float(lat), float(lon)
+        caixa = f"{lo - .006},{la - .0035},{lo + .006},{la + .0035}"
+        mapa = (f'<iframe title="Mapa: {e(nome)}" loading="lazy" '
+                f'src="https://www.openstreetmap.org/export/embed.html?bbox={caixa}&amp;layer=mapnik&amp;marker={la},{lo}"></iframe>')
+    except (TypeError, ValueError):
+        mapa = (f'<div class="nomap"><p style="margin:0;color:var(--ink);font-weight:600">{e(endereco or local or nome)}</p></div>')
 
     schema = {"@context": "https://schema.org", "@type": "LocalBusiness", "name": nome}
     if telefone:
@@ -192,6 +219,7 @@ def renderizar(lead, cfg, final=False):
         hours=horas_html,
         hours_json=horas_json,
         map=mapa,
+        map_link=link_mapa,
         footer_location=e(f" · {local}" if local else ""),
         credit=f"Demonstração por {estudio}",
         **cores,
