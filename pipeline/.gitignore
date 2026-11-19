@@ -1,0 +1,4 @@
+.env
+dados/
+sites/
+__pycache__/

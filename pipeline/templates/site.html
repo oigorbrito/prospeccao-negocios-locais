@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>$title</title>
+<meta name="description" content="$description">$robots_meta
+<meta name="theme-color" content="$hero_bg">
+<link rel="icon" href="data:image/svg+xml,$favicon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?$font_query&display=swap">
+<script type="application/ld+json">$schema</script>
+<style>
+  :root {
+    --accent: $accent; --accent-text: $accent_text; --on-accent: $on_accent; --hero-bg: $hero_bg; --hero-ink: $hero_ink;
+    --soft: $soft; --ink: $ink; --muted: $muted; --line: $line;
+    --display: "$display_font", Georgia, serif; --body: "$body_font", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --radius: 18px; --shadow: 0 1px 2px rgba(16,24,40,.06), 0 12px 32px -12px rgba(16,24,40,.18);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: var(--body); color: var(--ink); background: #fff; line-height: 1.6; font-size: 17px; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3 { font-family: var(--display); line-height: 1.12; margin: 0; }
+  a { color: inherit; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+  .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent-text); margin-bottom: 12px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 24px; border-radius: 999px; font-weight: 600; font-size: 16px; text-decoration: none; }
+  .btn-primary { background: var(--accent); color: var(--on-accent); }
+  .btn-outline { border: 1.5px solid currentColor; }
+
+  .preview-bar { background: #0b0f19; color: #e5e7eb; font: 500 14px/1.4 system-ui, sans-serif; text-align: center; padding: 10px 16px; }
+
+  .hero { background: var(--hero-bg); color: var(--hero-ink); }
+  .hero .wrap { display: grid; grid-template-columns: 1.2fr .9fr; gap: 48px; align-items: center; padding-top: 88px; padding-bottom: 96px; }
+  .hero h1 { font-size: clamp(40px, 6vw, 68px); margin-bottom: 16px; }
+  .hero .lede { font-size: 19px; opacity: .9; margin: 0 0 30px; }
+  .hero .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .hero .eyebrow { color: inherit; opacity: .8; }
+  .card { background: #fff; color: var(--ink); border-radius: var(--radius); box-shadow: var(--shadow); padding: 28px; border: 1px solid var(--line); }
+  .info h3 { font-size: 22px; margin-bottom: 16px; }
+  .info ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+  .info li small { display: block; color: var(--muted); font-size: 13px; }
+  .info li a { text-decoration: none; word-break: break-word; }
+  .info li a:hover { text-decoration: underline; }
+  .status { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: #9ca3af; flex: none; }
+  .status.open .dot { background: #16a34a; }
+
+  section { padding: 80px 0; }
+  .section-head { margin-bottom: 36px; }
+  .section-head h2 { font-size: clamp(30px, 4vw, 42px); margin-bottom: 10px; }
+  .section-head p { color: var(--muted); margin: 0; }
+  .visit-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; align-items: stretch; }
+  .hours table { width: 100%; border-collapse: collapse; font-size: 16px; }
+  .hours td { padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .hours td:last-child { text-align: right; color: var(--muted); }
+  .hours tr:last-child td { border-bottom: 0; }
+  .hours tr.today td { font-weight: 700; color: var(--ink); }
+  .hours .raw { color: var(--muted); margin: 0; }
+  .map { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); min-height: 320px; background: var(--soft); }
+  .map iframe { width: 100%; height: 100%; min-height: 320px; border: 0; display: block; }
+  .map .nomap { height: 100%; min-height: 320px; display: grid; place-items: center; text-align: center; padding: 28px; color: var(--muted); }
+
+  footer.site { border-top: 1px solid var(--line); padding: 32px 0 40px; color: var(--muted); font-size: 14px; }
+  footer.site .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+  @media (max-width: 860px) {
+    .hero .wrap, .visit-grid { grid-template-columns: 1fr; }
+    .hero .wrap { padding-top: 56px; padding-bottom: 64px; gap: 32px; }
+    section { padding: 56px 0; }
+  }
+</style>
+</head>
+<body>
+$preview_bar
+<header>
+  <div class="wrap"></div>
+</header>
+
+<main id="top">
+<section class="hero" style="padding:0">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">$eyebrow</div>
+      <h1>$name</h1>
+      <p class="lede">$tagline</p>
+      <div class="actions">
+        $whatsapp_button
+        $call_button
+        <a class="btn btn-outline" href="#visit">Como chegar</a>
+      </div>
+    </div>
+    <aside class="card info" aria-label="Dados de contato">
+      <h3>Contato</h3>
+      <ul>$contact_items</ul>
+      $status_line
+    </aside>
+  </div>
+</section>
+
+<section id="visit">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Visite</div>
+      <h2>Horário e localização</h2>
+      <p>$address_line</p>
+    </div>
+    <div class="visit-grid">
+      <div class="card hours">
+        <h3 style="font-size:22px;margin-bottom:12px">Horário de funcionamento</h3>
+        $hours
+      </div>
+      <div class="map">$map</div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <span>© <span id="yr"></span> $name$footer_location</span>
+    <span>$credit</span>
+  </div>
+</footer>
+
+<script>
+  document.getElementById("yr").textContent = new Date().getFullYear();
+  (function () {
+    var hours = $hours_json; if (!hours) return;
+    var idx = (new Date().getDay() + 6) % 7;
+    var row = document.querySelector('.hours tr[data-day="' + idx + '"]');
+    if (row) row.classList.add("today");
+    var el = document.getElementById("open-status"); if (!el) return;
+    var now = new Date(), mins = now.getHours() * 60 + now.getMinutes(), open = false;
+    (hours[idx] || []).forEach(function (r) {
+      if ((mins >= r[0] && mins < r[1]) || (mins + 1440 >= r[0] && mins + 1440 < r[1])) open = true;
+    });
+    el.classList.toggle("open", open);
+    el.lastChild.textContent = open ? "Aberto agora" : "Fechado agora";
+  })();
+</script>
+</body>
+</html>
